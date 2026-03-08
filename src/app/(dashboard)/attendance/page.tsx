@@ -1,23 +1,8 @@
 "use client"
 
-import * as React from "react"
-import {
-  CalendarDays,
-  ChevronLeft,
-  ChevronRight,
-  Clock,
-  BadgeDollarSign,
-  ShieldCheck,
-  ShieldOff,
-  Plus,
-  Check,
-  AlertTriangle,
-  UndoDot,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -33,6 +18,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Table,
   TableBody,
@@ -41,9 +28,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { calcDeductions, DailyEntry, Employee } from "@/lib/attendance-data"
 import { useAttendanceStore } from "@/lib/attendance-store"
-import { calcDeductions, DailyEntry, Employee, Pardons, toMins } from "@/lib/attendance-data"
+import {
+  AlertTriangle,
+  BadgeDollarSign,
+  CalendarDays,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  Plus,
+  ShieldCheck,
+  ShieldOff,
+  UndoDot,
+} from "lucide-react"
+import * as React from "react"
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -662,14 +662,18 @@ export default function AttendancePage() {
                   <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => shiftDate(-1)}>
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 relative group cursor-pointer h-7 px-2 hover:bg-muted rounded transition-colors">
                     <input
                       type="date"
                       value={currentDate}
                       onChange={e => setCurrentDate(e.target.value)}
-                      className="text-sm font-semibold bg-transparent border-0 outline-none cursor-pointer"
+                      className="absolute inset-0 opacity-0 z-10 cursor-pointer"
+                      onClick={e => (e.target as any).showPicker?.()}
                     />
-                    {isToday && <Badge variant="secondary" className="text-[10px] px-1.5">Today</Badge>}
+                    <span className="text-sm font-semibold">
+                      {currentDate.split("-").reverse().join("/")}
+                    </span>
+                    {isToday && <Badge variant="secondary" className="text-[10px] px-1.5 font-normal">Today</Badge>}
                   </div>
                   <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => shiftDate(1)}>
                     <ChevronRight className="h-4 w-4" />
